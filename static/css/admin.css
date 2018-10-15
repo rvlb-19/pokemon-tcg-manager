@@ -1,0 +1,42 @@
+.field-collection_logo label, 
+.field-card_image label { 
+    display: none;
+}
+
+.field-collection_logo .set-logo { height: 120px; }
+
+.field-card_image .card-img { height: 360px; }
+
+.form-row > div {
+    display: flex;
+    align-items: center;
+}
+
+.field-collection_logo > div,
+.field-card_image > div {
+    justify-content: center;
+}
+
+.row1 > td, .row1 > th, .row2 > td, .row2 > th { vertical-align: middle; }
+
+.field-collection_icon .set-icon {
+    height: 40px;
+}
+
+.form-row > div > div {
+    margin-left: 0 !important;
+}
+
+.energy-type { width: 25px; height: 25px; }
+
+.energy-type.fire { background-position: 0 0; }
+.energy-type.colorless { background-position: -25px 0; }
+.energy-type.fairy { background-position: -50px 0; }
+.energy-type.metal { background-position: -75px 0; }
+.energy-type.dragon { background-position: 0 -25px; }
+.energy-type.lightning { background-position: -25px -25px; }
+.energy-type.fighting { background-position: -50px -25px; }
+.energy-type.psychic { background-position: -75px -25px; }
+.energy-type.darkness { background-position: 0 -50px; }
+.energy-type.grass { background-position: -25px -50px; }
+.energy-type.water { background-position: -75px -50px; }
