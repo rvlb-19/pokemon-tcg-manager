@@ -23,9 +23,13 @@
     height: 40px;
 }
 
+.row1 .card-img, .row2 .card-img { height: 100px; }
+
 .form-row > div > div {
     margin-left: 0 !important;
 }
+
+.types-list { display: flex; }
 
 .energy-type { width: 25px; height: 25px; }
 

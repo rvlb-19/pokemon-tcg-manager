@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Card, Collection
 
@@ -31,7 +33,7 @@ class CardAdmin(StyledModelAdmin):
     def card_image(self, instance):
         set_code = instance.collection.name
         number = instance.number
-        url = 'https://images.pokemontcg.io/{}/{}.png'.format(set_code, number)
+        url = 'https://images.pokemontcg.io/{}/{}_hires.png'.format(set_code, number)
         img = '<img src="{}" class="card-img">'.format(url)
         return mark_safe(img)
     
@@ -42,13 +44,16 @@ class CardAdmin(StyledModelAdmin):
         return mark_safe(img)
 
     def typing(self, instance):
-        types = (instance.first_type, instance.second_type)
+        types = [instance.first_type, instance.second_type]
+        # This check occurs to deal with API data that has duplicate typings
+        if types[0] == types[1]:
+            types.pop()
         template = '<div class="energy-type {}" style="background-image: url({})"></div>'
         elements = [template.format(t.lower(), static('img/energy-types.png')) for t in types if t]
-        return mark_safe(''.join(elements))
+        return mark_safe('<div class="types-list">{}</div>'.format(''.join(elements)))
     
     # changelist_view
-    list_display = ('number', 'name', 'collection_icon', 'typing',)
+    list_display = ('number', 'card_image', 'name', 'collection_icon', 'typing',)
     list_display_links = ('name',)
     
     # Permissions    
@@ -85,14 +90,25 @@ class CollectionAdmin(StyledModelAdmin):
         return mark_safe(img)
     
     # changelist_view
-    list_display = ('name', 'collection_icon',)
+    list_display = ('name', 'collection_icon', 'card_qnt', 'view_cards')
     def collection_icon(self, instance):
         collection_code = instance.name
         url = 'https://images.pokemontcg.io/{}/symbol.png'.format(collection_code)
         img = '<img src="{}" class="set-icon">'.format(url)
         return mark_safe(img)
     
+    def card_qnt(self, instance):
+        qnt = Card.objects.filter(collection=instance.pk).count()
+        return _('{} cards'.format(qnt))
+    
+    def view_cards(self, instance):
+        url = reverse('admin:cards_card_changelist')
+        anchor = '<a href="{}?collection={}">{}</a>'.format(url, instance.pk, _('View cards'))
+        return mark_safe(anchor)
+    
     collection_icon.short_description = ''
+    card_qnt.short_description = ''
+    view_cards.short_description = ''
 
     # Permissions
     def has_change_permission(self, request, obj=None):

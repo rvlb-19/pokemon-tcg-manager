@@ -21,7 +21,8 @@ class Collection(models.Model):
         return self.get_name_display()
 
 class Card(models.Model):
-    number = models.PositiveIntegerField(_('number'), null=True)
+    # Became a CharField for rare cases where the number is a letter
+    number = models.CharField(_('number'), max_length=10, null=True)
     name = models.CharField(_('name'), max_length=255)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     supertype = models.CharField(_('supertype'), max_length=255)
@@ -29,11 +30,12 @@ class Card(models.Model):
     first_type = models.CharField(_('first type'), max_length=255, null=True)
     second_type = models.CharField(_('second type'), max_length=255, null=True)
     rarity = models.CharField(_('rarity'), max_length=255, null=True)
+    sequence = models.PositiveIntegerField(_('sequence'), null=True)
 
     class Meta:
         verbose_name = _('card')
         verbose_name_plural = _('cards')
-        ordering = ('collection', 'number')
+        ordering = ('collection', 'sequence')
     
     def __str__(self):
         return self.name
@@ -52,13 +54,21 @@ class Card(models.Model):
         except KeyError:
             pass
         
-        set_code = obj['setCode']
+        number = obj['number']
+
+        try:
+            sequence = int(number)
+        except ValueError:
+            # Offsets the sequence to a large number using the letter ASCII code
+            sequence = 500 + ord(number)
+                
         card = {
-            'number': obj['id'].replace('{}-'.format(set_code), ''),
+            'number': number,
             'name': obj['name'],
-            'collection': Collection.objects.get(name=set_code),
+            'collection': Collection.objects.get(name=obj['setCode']),
             'supertype': obj['supertype'],
             'subtype': obj['subtype'],
+            'sequence': sequence,
             **extra_fields,
         }
 
