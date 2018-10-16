@@ -18,7 +18,7 @@ A simple application to manage your Pokémon TCG cards collection (under constru
 
 ## Credits
 
-This application was developed using data consumed from the awesome (Pokémon TCG API)[https://github.com/PokemonTCG/pokemon-tcg-api].
+This application was developed using data consumed from the awesome [Pokémon TCG API](https://github.com/PokemonTCG/pokemon-tcg-api).
 
 Pokémon and Pokémon character names are trademarks of Nintendo.
 
